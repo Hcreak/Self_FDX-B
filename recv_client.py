@@ -44,5 +44,6 @@ zconf.close()
 while True:
     try:
         print s.recv(1024)
-    except:
+    except error as e:
+        # print e
         pass

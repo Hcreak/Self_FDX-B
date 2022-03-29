@@ -1,5 +1,11 @@
 #include <WiFi.h>
 #include <ESPmDNS.h>
+#include <Wire.h> // Library for I2C communication
+#include <LiquidCrystal_I2C.h> // Library for LCD
+
+// Wiring: SDA pin is connected to A4 and SCL pin to A5.
+// Connect to LCD via I2C, default address 0x27 (A0-A2 not jumpered)
+LiquidCrystal_I2C lcd = LiquidCrystal_I2C(0x27, 16, 2); // 1602
 
 const char *ssid = "ESPsoftAP_Test";
 const char *password = "testtest";
@@ -8,7 +14,10 @@ WiFiServer server; //声明服务器对象
 
 void setup()
 {
-    
+    // Initiate the LCD:
+    lcd.init();
+    lcd.backlight();
+
     Serial.begin(9600);
     
     Serial.print("Setting soft-AP ... ");
@@ -44,8 +53,7 @@ void setup()
 }
 
 void loop()
-{
-    
+{   
     WiFiClient client = server.available(); //尝试建立客户对象
     if (client) //如果当前客户可用
     {
@@ -76,6 +84,11 @@ void loop()
                 char formatOut [16];
                 sprintf (formatOut, "%04d%012lld", intCountryCode, intTagNumber);
                 client.print(formatOut);
+
+                lcd.setCursor(0, 0);
+                lcd.print("FDX-B");
+                lcd.setCursor(0, 1);
+                lcd.print(formatOut);
             }
         }
         client.stop(); //结束当前连接:

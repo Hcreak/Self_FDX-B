@@ -2,12 +2,14 @@
 
 from Tkinter import *
 import ttk
+import tkFileDialog
 
 from zeroconf import Zeroconf
 from socket import *
  
 import time
 from threading import Timer
+import csv
 
 connect_target = ()
 
@@ -74,10 +76,16 @@ def show_work_page():
 
 
 def export_csv():
-    pass
+    types = [('Comma-Separated Values(CSV)', '*.csv')]
+    with tkFileDialog.asksaveasfile(mode='wt', filetypes=types, defaultextension=types) as f:
+        cw = csv.writer(f)
+        #采用writerow()方法
+        for item in table.get_children():
+            cw.writerow(table.item(item,"values"))
 
 def table_clear():
-    pass
+    for item in table.get_children():
+        table.delete(item)
 
 
 def Timer1_create():
@@ -141,7 +149,7 @@ if __name__ == '__main__':
     # show_load_page()
     show_work_page()
 
-    Timer1_create()
+    # Timer1_create()
 
     root.protocol('WM_DELETE_WINDOW', closeWindow)
     root.mainloop()
